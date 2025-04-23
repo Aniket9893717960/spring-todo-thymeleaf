@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .task-form {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .task-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .task-form input:focus {
+            border-color: #3498db;
+        }
+
+        .task-form button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .task-form button:hover {
+            background-color: #2980b9;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-title {
+            flex: 1;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+
+        .text-strikethrough {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+
+        .task-actions a {
+            margin-left: 10px;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn {
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .toggle-btn:hover {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .untoggle-btn {
+            color: #e67e22;
+            border: 1px solid #e67e22;
+        }
+
+        .untoggle-btn:hover {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .delete-btn {
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Todo Application</h1>
+    <form class="task-form" th:action="@{/tasks}" method="post">
+        <input type="text" name="title" placeholder="Add a new task..." required>
+        <button type="submit">Add</button>
+    </form>
+
+    <div th:if="${not #lists.isEmpty(tasks)}">
+        <div class="task-list">
+            <div class="task-item" th:each="task : ${tasks}">
+                    <span class="task-title"
+                          th:classappend="${task.completed} ? 'text-strikethrough'"
+                          th:text="${task.title}">Default text if thymeleaf fails</span>
+                <div class="task-actions">
+                    <a th:href="@{/tasks/{id}/toggle(id=${task.id})}"
+                       th:text="${task.completed} ? 'UnToggle' : 'Toggle'"
+                       th:class="${task.completed} ? 'untoggle-btn' : 'toggle-btn'"></a>
+                    <a th:href="@{/tasks/{id}/delete(id=${task.id})}" class="delete-btn">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(tasks)}">
+        <p>No tasks found! Add your first task above.</p>
+    </div>
+</div>
+</body>
+</html>
